@@ -18,12 +18,22 @@ android {
     }
 
     buildTypes {
+        debug {
+            ndk {
+                abiFilters.add("arm64-v8a")
+                abiFilters.add("x86_64")
+            }
+        }
         release {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            ndk {
+                abiFilters.add("arm64-v8a")
+                abiFilters.add("x86_64")
+            }
         }
     }
     compileOptions {
