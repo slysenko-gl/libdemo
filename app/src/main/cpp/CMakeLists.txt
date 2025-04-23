@@ -3,7 +3,7 @@
 # For more examples on how to use CMake, see https://github.com/android/ndk-samples.
 
 # Sets the minimum CMake version required for this project.
-cmake_minimum_required(VERSION 3.22.1)
+cmake_minimum_required(VERSION 4.0.1)
 
 # Declares the project name. The project name can be accessed via ${ PROJECT_NAME},
 # Since this is the top level CMakeLists.txt, the project name is also accessible
@@ -38,7 +38,6 @@ target_link_libraries(${CMAKE_PROJECT_NAME}
 
 set(Boost_USE_STATIC_LIBS ON)
 set(Boost_USE_DEBUG_LIBS OFF)
-set(Boost_USE_RELEASE_LIBS ON)
 set(Boost_USE_MULTITHREADED ON)
 set(Boost_USE_STATIC_RUNTIME OFF)
 
@@ -46,21 +45,29 @@ set(Boost_USE_STATIC_RUNTIME OFF)
 #set(Boost_NO_BOOST_CMAKE TRUE)
 
 #set(CMAKE_FIND_DEBUG_MODE TRUE)
-#set(Boost_VERBOSE TRUE)
+set(Boost_VERBOSE TRUE)
+set(Boost_DEBUG TRUE)
 
-#find_package(Boost 1.85 REQUIRED CONFIG HINTS C:/Android/boost/build/out/${CMAKE_ANDROID_ARCH_ABI}/lib/cmake)
+#find_package(Boost 1.85 REQUIRED CONFIG HINTS "${CMAKE_CURRENT_SOURCE_DIR}/../../../../../boost/build/out/${CMAKE_ANDROID_ARCH_ABI}/lib/cmake")
 
 #set(Boost_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../../../../../boost/build/out/${CMAKE_ANDROID_ARCH_ABI}/lib/cmake")
-#find_package(Boost 1.85.0 CONFIG REQUIRED COMPONENTS "url")
+find_package(Boost CONFIG COMPONENTS url) # REQUIRED)
 
-#message(Boost_INCLUDE_DIR="${Boost_INCLUDE_DIR}")
-#message(Boost_LIBRARY_DIRS="${Boost_LIBRARY_DIRS}")
+if(Boost_FOUND)
 
-set(BOOST_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/../../../../../boost/build/out/${CMAKE_ANDROID_ARCH_ABI}")
-set(BOOST_INCLUDE_DIRS "${BOOST_ROOT}/include")
-set(BOOST_LIBRARY_DIRS "${BOOST_ROOT}/lib")
+    message(Boost_INCLUDE_DIR="${Boost_INCLUDE_DIR}")
+    message(Boost_LIBRARY_DIRS="${Boost_LIBRARY_DIRS}")
 
-target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE ${BOOST_INCLUDE_DIRS})
-target_link_libraries(${CMAKE_PROJECT_NAME} ${BOOST_LIBRARY_DIRS}/libboost_url.a)
+    target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE ${Boost_INCLUDE_DIR})
+    target_link_libraries(${CMAKE_PROJECT_NAME} ${Boost_LIBRARIES})
 
+else()
 
+    set(BOOST_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/../../../../../boost/build/out/${CMAKE_ANDROID_ARCH_ABI}")
+    set(BOOST_INCLUDE_DIRS "${BOOST_ROOT}/include")
+    set(BOOST_LIBRARY_DIRS "${BOOST_ROOT}/lib")
+
+    target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE ${BOOST_INCLUDE_DIRS})
+    target_link_libraries(${CMAKE_PROJECT_NAME} ${BOOST_LIBRARY_DIRS}/libboost_url.a)
+
+endif()
